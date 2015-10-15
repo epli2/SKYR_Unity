@@ -23,53 +23,41 @@ public class FileRead : MonoBehaviour
     private string textData;
     //private char[] delimiterChars = { ' ' };
     public GameObject cube;
-
-
+	private int[] takasa = new int[1000];
+	private int count1 = 0;
     /// 初期化
     void Start()
     {
         for (int i = 0; i < 8; i++)
         {
-            this.StartCoroutineAsync(read(filePathSet[i]));
-        }
-        //this.StartCoroutineAsync(read(filePath1));
-        //this.StartCoroutineAsync(read(filePath2));
-        //this.StartCoroutineAsync(read(filePath3));
-        //this.StartCoroutineAsync(read(filePath4));
-        //this.StartCoroutineAsync(read(filePath5));
-        //this.StartCoroutineAsync(read(filePath6));
-        //this.StartCoroutineAsync(read(filePath7));
-        //this.StartCoroutineAsync(read(filePath8));
-        //read(filePath1);
-        //read(filePath2);
-        //read(filePath3);
-        //read(filePath4);
-        //read(filePath5);
-        //read(filePath6);
-        //read(filePath7);
-        //read(filePath8);
-        //StartCoroutine("read", filePath1);
-        //StartCoroutine("read", filePath2);
-        //StartCoroutine("read", filePath3);
-        //StartCoroutine("read", filePath4);
-        //StartCoroutine("read", filePath5);
-        //StartCoroutine("read", filePath6);
-        //StartCoroutine("read", filePath7);
-        //StartCoroutine("read", filePath8);
+            //this.StartCoroutineAsync(read(filePathSet[i]));
+			//read(filePathSet[i]);
+			//StartCoroutine("read", filePathSet[i]);
+		}
+		StartCoroutine("read", filePathSet[7]);
+//		for(int i=0; i<1000; i++){
+//			//Debug.Log(takasa[i]);
+//			for(int j=0; j<takasa[i]/10; j++){
+//				Instantiate(this.cube, new Vector3(0, takasa[i]-j, i), Quaternion.identity);
+//			}
+//		}
+		Debug.Log(count1);
     }
 
     IEnumerator read(string filePath)
     {
-        //int cnt = 0;
-        float x = 0;
-        float y = 0;
-        float z = 0;
-        yield return Ninja.JumpToUnity;
+        int cnt = 0;
+		
+		float[] x = new float[1500000];
+		float[] y = new float[1500000];
+		float[] z = new float[1500000];
+        //yield return Ninja.JumpToUnity;
         StreamReader reader = new StreamReader(
             Application.dataPath + filePath,
             System.Text.Encoding.GetEncoding("utf-8"));
-        yield return Ninja.JumpBack;
-        while (reader.EndOfStream == false)
+        //yield return Ninja.JumpBack;
+		while (reader.EndOfStream == false)
+		//while( cnt <  1000000)
         {
             textData = reader.ReadLine();
             string[] words = textData.Split(' ');
@@ -87,32 +75,35 @@ public class FileRead : MonoBehaviour
             //			Debug.Log (words [2]);
             //			Debug.Log (words [4]);
             //			Debug.Log (words [8]);
-            x = float.Parse(words[2]);
-            z = float.Parse(words[4]);
+            x[cnt] = float.Parse(words[2]);
+            z[cnt] = float.Parse(words[4]);
 
             if (words[5] == "-9999.99")
             {
-                y = 1000;
+                y[cnt] = 1000;
+				count1 ++;
             }
             else if (words[7] == words[0])
             {
                 if (words[8] == words[0])
                 {
-                    y = float.Parse(words[9]);
+                    y[cnt] = float.Parse(words[9]);
                 }
                 else
                 {
-                    y = float.Parse(words[8]);
+                    y[cnt] = float.Parse(words[8]);
                 }
             }
             else
             {
-                y = float.Parse(words[7]);
+                y[cnt] = float.Parse(words[7]);
             }
-            yield return Ninja.JumpToUnity;
-            Instantiate(this.cube, new Vector3(x, y, z), Quaternion.identity);
-            yield return Ninja.JumpBack;
-            //cnt++;
+            //yield return Ninja.JumpToUnity;
+            Instantiate(this.cube, new Vector3(x[cnt], y[cnt], z[cnt]), Quaternion.identity);
+			//int tmp = (int)System.Math.Round(y[cnt]);
+			//takasa[tmp] += 1;
+            //yield return Ninja.JumpBack;
+            cnt++;
         }
         reader.Close();
         yield return null;
